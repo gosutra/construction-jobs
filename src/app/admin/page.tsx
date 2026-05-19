@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import type { Worker, JobPosting, Match } from "@/types";
 
 type Tab = "workers" | "jobs" | "matches";
@@ -20,11 +21,17 @@ const RESPONSE_LABEL: Record<string, string> = {
 };
 
 export default function AdminPage() {
+  const router = useRouter();
   const [tab, setTab] = useState<Tab>("workers");
   const [workers, setWorkers] = useState<Worker[]>([]);
   const [jobs, setJobs] = useState<JobPosting[]>([]);
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const handleLogout = async () => {
+    await fetch("/api/admin/auth", { method: "DELETE" });
+    router.push("/admin/login");
+  };
 
   const fetchData = useCallback(async (t: Tab) => {
     setLoading(true);
@@ -59,8 +66,18 @@ export default function AdminPage() {
     <main className="min-h-screen bg-gray-50">
       {/* 헤더 */}
       <div className="bg-gray-900 text-white px-5 pt-10 pb-5">
-        <h1 className="text-xl font-bold">관리자 대시보드</h1>
-        <p className="text-gray-400 text-sm mt-1">건설현장 인력 플랫폼</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold">관리자 대시보드</h1>
+            <p className="text-gray-400 text-sm mt-1">건설현장 인력 플랫폼</p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="text-xs text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 rounded-lg px-3 py-1.5 transition-colors"
+          >
+            로그아웃
+          </button>
+        </div>
       </div>
 
       {/* 탭 */}
