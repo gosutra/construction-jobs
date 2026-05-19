@@ -40,7 +40,13 @@ export default function AdminPage() {
       } else {
         const res = await fetch("/api/match");
         const json = await res.json();
-        setMatches(json.matches || []);
+        // Supabase JOIN 응답: workers/job_postings 키 → worker/job_posting 키로 정규화
+        const normalized = (json.matches || []).map((m: Record<string, unknown>) => ({
+          ...m,
+          worker: m.workers ?? m.worker,
+          job_posting: m.job_postings ?? m.job_posting,
+        }));
+        setMatches(normalized);
       }
     } finally {
       setLoading(false);
@@ -144,6 +150,7 @@ export default function AdminPage() {
         {/* 매칭 현황 */}
         {!loading && tab === "matches" && (
           <div className="space-y-3">
+            {/* 요약 카운트 */}
             <div className="flex gap-3 text-xs text-center mb-4">
               {["pending", "interested", "not_interested"].map(r => (
                 <div key={r} className={`flex-1 py-2 rounded-lg ${RESPONSE_BADGE[r]}`}>
@@ -155,32 +162,106 @@ export default function AdminPage() {
               ))}
             </div>
             <div className="text-sm text-gray-500 font-medium">총 {matches.length}건</div>
-            {matches.map(m => (
-              <div key={m.id} className="card">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-sm font-semibold text-gray-800">
-                    {(m.worker as Worker)?.name} → {(m.job_posting as JobPosting)?.company_name}
+
+            {matches.map(m => {
+              const worker = m.worker as Worker | undefined;
+              const job = m.job_posting as JobPosting | undefined;
+              return (
+                <div key={m.id} className="card space-y-3">
+                  {/* 상단: 응답 상태 */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-400">매칭 ID: {m.id.slice(0, 8)}…</span>
+                    <span className={`badge text-xs font-bold ${RESPONSE_BADGE[m.response]}`}>
+                      {RESPONSE_LABEL[m.response]}
+                    </span>
                   </div>
-                  <span className={`badge ${RESPONSE_BADGE[m.response]}`}>
-                    {RESPONSE_LABEL[m.response]}
-                  </span>
+
+                  {/* 구직자 정보 */}
+                  <div className="bg-orange-50 rounded-xl px-3 py-2">
+                    <div className="text-xs font-bold text-orange-600 mb-1">👷 구직자 정보</div>
+                    {worker ? (
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-gray-800">{worker.name}</span>
+                          <span className="text-gray-500 text-sm">{worker.phone}</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5 text-xs">
+                          <span className="badge bg-orange-100 text-orange-700">{worker.job_category}</span>
+                          <span className="badge bg-blue-100 text-blue-700">{worker.skill_level}</span>
+                          <span className="badge bg-gray-100 text-gray-600">{worker.city}</span>
+                          {worker.experience_years > 0 && (
+                            <span className="badge bg-gray-100 text-gray-600">경력 {worker.experience_years}년</span>
+                          )}
+                          {worker.age && (
+                            <span className="badge bg-gray-100 text-gray-600">{worker.age}세</span>
+                          )}
+                        </div>
+                        {worker.certifications?.length ? (
+                          <div className="text-xs text-gray-500">자격증: {worker.certifications.join(", ")}</div>
+                        ) : null}
+                        <div className="text-xs text-gray-500 flex flex-wrap gap-2">
+                          {worker.need_accommodation && <span>🏠 숙소필요</span>}
+                          {worker.need_transportation && <span>🚌 교통필요</span>}
+                          {worker.has_car && <span>🚗 차량보유</span>}
+                          {worker.preferred_wage ? <span>희망일당 {worker.preferred_wage.toLocaleString()}원</span> : null}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-xs text-gray-400">구직자 정보 없음</div>
+                    )}
+                  </div>
+
+                  {/* 구인 공고 정보 */}
+                  <div className="bg-blue-50 rounded-xl px-3 py-2">
+                    <div className="text-xs font-bold text-blue-600 mb-1">🏗️ 구인 공고 정보</div>
+                    {job ? (
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-gray-800">{job.company_name}</span>
+                          <span className={`badge text-xs ${job.status === "open" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                            {job.status === "open" ? "모집중" : job.status === "filled" ? "마감" : "취소"}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5 text-xs">
+                          <span className="badge bg-orange-100 text-orange-700">{job.job_category}</span>
+                          <span className="badge bg-blue-100 text-blue-700">{job.skill_level_required}</span>
+                          <span className="badge bg-gray-100 text-gray-600">{job.location_city}</span>
+                        </div>
+                        <div className="text-sm text-gray-700 font-semibold">
+                          💰 일당 {job.daily_wage.toLocaleString()}원 · 👥 {job.workers_needed}명
+                        </div>
+                        <div className="text-xs text-gray-600">
+                          📍 {job.location_address}
+                        </div>
+                        <div className="text-xs text-gray-600">
+                          📅 {new Date(job.work_start_date).toLocaleDateString("ko-KR")} 시작
+                          {job.work_end_date ? ` ~ ${new Date(job.work_end_date).toLocaleDateString("ko-KR")}` : ""}
+                        </div>
+                        <div className="text-xs text-gray-500 flex flex-wrap gap-2">
+                          {job.accommodation_provided && <span>🏠 숙소제공</span>}
+                          {job.transportation_provided && <span>🚌 교통제공</span>}
+                          {(job as JobPosting & { meal_provided?: boolean }).meal_provided && <span>🍱 식사제공</span>}
+                        </div>
+                        <div className="text-xs text-gray-500">담당: {job.contact_name} {job.contact_phone}</div>
+                      </div>
+                    ) : (
+                      <div className="text-xs text-gray-400">공고 정보 없음</div>
+                    )}
+                  </div>
+
+                  {/* 타임스탬프 */}
+                  <div className="text-xs text-gray-400 space-y-0.5 border-t border-gray-100 pt-2">
+                    {m.notified_at && (
+                      <div>📤 알림 발송: {new Date(m.notified_at).toLocaleString("ko-KR")}</div>
+                    )}
+                    {m.responded_at && (
+                      <div>✅ 응답 시각: {new Date(m.responded_at).toLocaleString("ko-KR")}</div>
+                    )}
+                    {!m.notified_at && <div className="text-yellow-500">⏳ 아직 알림 미발송</div>}
+                  </div>
                 </div>
-                <div className="text-xs text-gray-500">
-                  {(m.job_posting as JobPosting)?.job_category} ·{" "}
-                  {(m.job_posting as JobPosting)?.daily_wage?.toLocaleString()}원
-                </div>
-                {m.notified_at && (
-                  <div className="text-xs text-gray-400 mt-1">
-                    발송: {new Date(m.notified_at).toLocaleString("ko-KR")}
-                  </div>
-                )}
-                {m.responded_at && (
-                  <div className="text-xs text-gray-400">
-                    응답: {new Date(m.responded_at).toLocaleString("ko-KR")}
-                  </div>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

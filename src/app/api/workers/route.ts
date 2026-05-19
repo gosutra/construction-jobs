@@ -1,15 +1,20 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
+import { calcAgeFromBirthDate } from "@/types";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const supabase = createServiceClient();
 
+    // birth_date(YYMMDD) → age 계산
+    const age = body.birth_date ? calcAgeFromBirthDate(body.birth_date) : (body.age ?? null);
+
     const { error } = await supabase.from("workers").insert({
       name: body.name,
       phone: body.phone,
-      age: body.age,
+      birth_date: body.birth_date || null,
+      age,
       city: body.city,
       district: body.district || null,
       job_category: body.job_category,

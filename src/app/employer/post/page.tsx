@@ -28,6 +28,7 @@ const schema = z.object({
   age_max: z.coerce.number().optional(),
   accommodation_provided: z.boolean().default(false),
   transportation_provided: z.boolean().default(false),
+  meal_provided: z.boolean().default(false),
   required_documents: z.array(z.string()).default([]),
   description: z.string().optional(),
 });
@@ -53,6 +54,7 @@ export default function EmployerPostPage() {
       workers_needed: 1,
       accommodation_provided: false,
       transportation_provided: false,
+      meal_provided: false,
       required_documents: [],
     },
   });
@@ -269,6 +271,7 @@ export default function EmployerPostPage() {
               {[
                 { field: "accommodation_provided" as const, label: "🏠 숙소 제공" },
                 { field: "transportation_provided" as const, label: "🚌 교통 제공" },
+                { field: "meal_provided" as const, label: "🍱 식사 제공" },
               ].map(({ field, label }) => (
                 <label key={field} className="flex items-center justify-between card cursor-pointer py-3">
                   <span className="font-medium text-sm text-gray-800">{label}</span>

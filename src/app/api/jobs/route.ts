@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
         age_max: body.age_max || null,
         accommodation_provided: body.accommodation_provided || false,
         transportation_provided: body.transportation_provided || false,
+        meal_provided: body.meal_provided || false,
         required_documents: body.required_documents?.length ? body.required_documents : null,
         description: body.description || null,
         status: "open",

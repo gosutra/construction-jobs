@@ -69,7 +69,12 @@ export async function GET(req: NextRequest) {
   // 목록 조회 (관리자용)
   let query = supabase
     .from("matches")
-    .select("*, workers(name, phone, job_category, skill_level, city, experience_years), job_postings(company_name, job_category, daily_wage, work_start_date)")
+    .select(`*,
+      workers(id, name, phone, job_category, skill_level, city, experience_years, age, birth_date,
+              certifications, need_accommodation, need_transportation, has_car, preferred_wage),
+      job_postings(id, company_name, contact_name, contact_phone, job_category, skill_level_required,
+                   location_city, location_address, daily_wage, workers_needed, work_start_date, work_end_date,
+                   accommodation_provided, transportation_provided, meal_provided, status)`)
     .order("created_at", { ascending: false })
     .limit(200);
   if (jobId) query = query.eq("job_posting_id", jobId);
