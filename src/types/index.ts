@@ -3,7 +3,7 @@
   | '조적' | '타일' | '석공' | '미장' | '도장' | '유리' | '창호'
   | '금속' | '기계설비' | '전기' | '소방' | '통신' | '기타';
 
-export type SkillLevel = '초급' | '중급' | '고급' | '기능장';
+export type SkillLevel = '조공' | '준기공' | '기공';
 export type MatchResponse = 'pending' | 'interested' | 'not_interested' | 'expired';
 
 export const JOB_CATEGORIES: JobCategory[] = [
@@ -11,7 +11,7 @@ export const JOB_CATEGORIES: JobCategory[] = [
   '조적', '타일', '석공', '미장', '도장', '유리', '창호',
   '금속', '기계설비', '전기', '소방', '통신', '기타',
 ];
-export const SKILL_LEVELS: SkillLevel[] = ['초급', '중급', '고급', '기능장'];
+export const SKILL_LEVELS: SkillLevel[] = ['조공', '준기공', '기공'];
 export const CITIES = [
   '서울', '부산', '대구', '인천', '광주', '대전', '울산', '세종',
   '경기', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주',

@@ -190,7 +190,7 @@ export default function EmployerPostPage() {
             </div>
             <div>
               <label className="form-label">필요 숙련도 *</label>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {SKILL_LEVELS.map(level => (
                   <label key={level} className="cursor-pointer">
                     <input type="radio" {...register("skill_level_required")} value={level} className="sr-only" />
