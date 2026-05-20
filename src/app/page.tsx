@@ -36,12 +36,12 @@ export default function HomePage() {
         </div>
 
         {/* 슬로건 */}
-        <h1 className="text-white text-2xl font-bold leading-snug mb-2">
-          건설현장 인력,<br />
-          <span className="text-[#F59E0B]">딱 맞는 사람</span>이 먼저 찾아옵니다
+        <h1 className="text-[#F59E0B] text-2xl font-bold leading-snug mb-2 tracking-tight">
+          건설현장 인력 플랫폼
         </h1>
-        <p className="text-blue-200 text-sm leading-relaxed">
-          조건 등록 한 번으로 카카오 알림톡 자동 매칭
+        <p className="text-blue-100 text-sm leading-relaxed">
+          등록만 하면 조건에 맞는 현장을<br />
+          <span className="text-white font-semibold">카카오 알림</span>으로 먼저 알려드립니다
         </p>
       </header>
 
@@ -74,7 +74,7 @@ export default function HomePage() {
               href="/worker/register"
               className="block w-full text-center bg-[#F59E0B] hover:bg-amber-500 text-white font-bold py-3.5 rounded-xl text-base transition-colors shadow"
             >
-              구직 등록하기 →
+              구직 등록하기 (3분 완성) →
             </Link>
           </div>
         </section>
