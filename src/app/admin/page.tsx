@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import type { Worker, JobPosting, Match } from "@/types";
 import { JOB_CATEGORIES, SKILL_LEVELS, CITIES } from "@/types";
+import * as XLSX from "xlsx";
 
 type Tab = "workers" | "jobs" | "matches";
 
@@ -339,6 +340,105 @@ export default function AdminPage() {
     router.push("/admin/login");
   };
 
+  /* ── 엑셀 내보내기 ── */
+  const exportWorkers = () => {
+    const rows = workers.map(w => ({
+      이름: w.name,
+      휴대폰: w.phone,
+      생년월일: w.birth_date || "",
+      나이: w.age ?? "",
+      거주지역: w.city,
+      직종: w.job_category,
+      숙련도: w.skill_level,
+      경력년수: w.experience_years,
+      희망일당: w.preferred_wage ?? "",
+      숙소필요: w.need_accommodation ? "Y" : "N",
+      교통필요: w.need_transportation ? "Y" : "N",
+      차량보유: w.has_car ? "Y" : "N",
+      보유서류: w.certifications?.join(", ") ?? "",
+      활성여부: w.is_active ? "활성" : "비활성",
+      특이사항: w.notes ?? "",
+      등록일: new Date(w.created_at).toLocaleDateString("ko-KR"),
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    // 열 너비 자동 설정
+    ws["!cols"] = [
+      { wch: 8 }, { wch: 14 }, { wch: 10 }, { wch: 6 },
+      { wch: 8 }, { wch: 14 }, { wch: 8 }, { wch: 8 },
+      { wch: 10 }, { wch: 8 }, { wch: 8 }, { wch: 8 },
+      { wch: 30 }, { wch: 8 }, { wch: 20 }, { wch: 12 },
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "구직자");
+    XLSX.writeFile(wb, `구직자_${new Date().toLocaleDateString("ko-KR").replace(/\. /g, "-").replace(".", "")}.xlsx`);
+  };
+
+  const exportJobs = () => {
+    const rows = jobs.map(j => ({
+      업체명: j.company_name,
+      담당자: j.contact_name,
+      연락처: j.contact_phone,
+      지역: j.location_city,
+      상세주소: j.location_address ?? "",
+      직종: j.job_category,
+      숙련도: j.skill_level_required,
+      필요인원: j.workers_needed,
+      일당: j.daily_wage,
+      시작일: new Date(j.work_start_date).toLocaleDateString("ko-KR"),
+      종료일: j.work_end_date ? new Date(j.work_end_date).toLocaleDateString("ko-KR") : "",
+      연령하한: j.age_min ?? "",
+      연령상한: j.age_max ?? "",
+      성별: (j as JobPosting & { gender_preference?: string }).gender_preference ?? "성별무관",
+      숙소제공: j.accommodation_provided ? "Y" : "N",
+      교통제공: j.transportation_provided ? "Y" : "N",
+      식사제공: (j as JobPosting & { meal_provided?: boolean }).meal_provided ? "Y" : "N",
+      급여일: (j as JobPosting & { pay_day?: string }).pay_day ?? "",
+      필요서류: j.required_documents?.join(", ") ?? "",
+      공고상태: j.status === "open" ? "모집중" : j.status === "filled" ? "마감" : "취소",
+      등록일: new Date(j.created_at).toLocaleDateString("ko-KR"),
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws["!cols"] = [
+      { wch: 16 }, { wch: 8 }, { wch: 14 }, { wch: 8 }, { wch: 24 },
+      { wch: 14 }, { wch: 8 }, { wch: 8 }, { wch: 10 }, { wch: 12 },
+      { wch: 12 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 },
+      { wch: 8 }, { wch: 8 }, { wch: 14 }, { wch: 30 }, { wch: 8 }, { wch: 12 },
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "구인공고");
+    XLSX.writeFile(wb, `구인공고_${new Date().toLocaleDateString("ko-KR").replace(/\. /g, "-").replace(".", "")}.xlsx`);
+  };
+
+  const exportMatches = () => {
+    const rows = matches.map(m => {
+      const w = m.worker as Worker | undefined;
+      const j = m.job_posting as JobPosting | undefined;
+      return {
+        구직자명: w?.name ?? "",
+        구직자연락처: w?.phone ?? "",
+        직종: w?.job_category ?? "",
+        숙련도: w?.skill_level ?? "",
+        거주지: w?.city ?? "",
+        업체명: j?.company_name ?? "",
+        담당자연락처: j?.contact_phone ?? "",
+        일당: j?.daily_wage ?? "",
+        현장지역: j?.location_city ?? "",
+        응답상태: m.response === "interested" ? "지원의향" : m.response === "not_interested" ? "미관심" : m.response === "expired" ? "만료" : "대기중",
+        알림발송: m.notified_at ? new Date(m.notified_at).toLocaleString("ko-KR") : "미발송",
+        응답시각: m.responded_at ? new Date(m.responded_at).toLocaleString("ko-KR") : "",
+      };
+    });
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws["!cols"] = [
+      { wch: 8 }, { wch: 14 }, { wch: 14 }, { wch: 8 }, { wch: 8 },
+      { wch: 16 }, { wch: 14 }, { wch: 10 }, { wch: 8 },
+      { wch: 8 }, { wch: 18 }, { wch: 18 },
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "매칭현황");
+    XLSX.writeFile(wb, `매칭현황_${new Date().toLocaleDateString("ko-KR").replace(/\. /g, "-").replace(".", "")}.xlsx`);
+  };
+
   const fetchData = useCallback(async (t: Tab) => {
     setLoading(true);
     try {
@@ -444,7 +544,14 @@ export default function AdminPage() {
         {/* ── 구직자 목록 ── */}
         {!loading && tab === "workers" && (
           <div className="space-y-3">
-            <div className="text-sm text-gray-500 font-medium">총 {workers.length}명 등록</div>
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-500 font-medium">총 {workers.length}명 등록</div>
+              <button onClick={exportWorkers} disabled={workers.length === 0}
+                className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40
+                           text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
+                📊 엑셀 내보내기
+              </button>
+            </div>
             {workers.map(w => (
               <div key={w.id} className="card">
                 <div className="flex items-start justify-between mb-2">
@@ -485,7 +592,14 @@ export default function AdminPage() {
         {/* ── 구인 공고 목록 ── */}
         {!loading && tab === "jobs" && (
           <div className="space-y-3">
-            <div className="text-sm text-gray-500 font-medium">총 {jobs.length}건</div>
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-500 font-medium">총 {jobs.length}건</div>
+              <button onClick={exportJobs} disabled={jobs.length === 0}
+                className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40
+                           text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
+                📊 엑셀 내보내기
+              </button>
+            </div>
             {jobs.map(j => (
               <div key={j.id} className="card">
                 <div className="flex items-start justify-between mb-2">
@@ -538,7 +652,14 @@ export default function AdminPage() {
                 </div>
               ))}
             </div>
-            <div className="text-sm text-gray-500 font-medium">총 {matches.length}건</div>
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-500 font-medium">총 {matches.length}건</div>
+              <button onClick={exportMatches} disabled={matches.length === 0}
+                className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40
+                           text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
+                📊 엑셀 내보내기
+              </button>
+            </div>
             {matches.map(m => {
               const worker = m.worker as Worker | undefined;
               const job = m.job_posting as JobPosting | undefined;
