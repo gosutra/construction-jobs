@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
         transportation_provided: body.transportation_provided || false,
         meal_provided: body.meal_provided || false,
         required_documents: body.required_documents?.length ? body.required_documents : null,
+        document_deadline: body.document_deadline || null,
         description: body.description || null,
         status: "open",
       })

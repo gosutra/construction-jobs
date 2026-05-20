@@ -31,6 +31,7 @@ const schema = z.object({
   transportation_provided: z.boolean().default(false),
   meal_provided: z.boolean().default(false),
   required_documents: z.array(z.string()).default([]),
+  document_deadline: z.string().optional(),
   description: z.string().optional(),
 });
 
@@ -305,6 +306,16 @@ export default function EmployerPostPage() {
                   </div>
                 </label>
               ))}
+            </div>
+
+            <div>
+              <label className="form-label">서류 접수 마감일</label>
+              <input
+                {...register("document_deadline")}
+                type="date"
+                className="form-input"
+                min={new Date().toISOString().split("T")[0]}
+              />
             </div>
 
             <div>
