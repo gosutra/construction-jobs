@@ -44,8 +44,30 @@ export default function WorkerRegisterPage() {
   });
 
   const certifications = watch("certifications") || [];
+  const [etcChecked, setEtcChecked] = useState(false);
+  const [etcText, setEtcText] = useState("");
+
   const toggleCert = (doc: string) => {
     setValue("certifications", certifications.includes(doc) ? certifications.filter(c => c !== doc) : [...certifications, doc]);
+  };
+
+  const handleEtcCheck = (checked: boolean) => {
+    setEtcChecked(checked);
+    if (!checked) {
+      // 기타 항목 해제 시 기타로 추가된 항목 제거
+      setValue("certifications", certifications.filter(c => !c.startsWith("기타:")));
+      setEtcText("");
+    }
+  };
+
+  const handleEtcText = (text: string) => {
+    setEtcText(text);
+    const filtered = certifications.filter(c => !c.startsWith("기타:"));
+    if (text.trim()) {
+      setValue("certifications", [...filtered, `기타:${text.trim()}`]);
+    } else {
+      setValue("certifications", filtered);
+    }
   };
 
   const nextStep = async () => {
@@ -164,7 +186,25 @@ export default function WorkerRegisterPage() {
                     <span className="text-sm text-gray-700">{doc}</span>
                   </label>
                 ))}
+                {/* 기타 항목 */}
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={etcChecked} onChange={e => handleEtcCheck(e.target.checked)} className="w-4 h-4 accent-orange-500" />
+                  <span className="text-sm text-gray-700">기타</span>
+                </label>
               </div>
+              {/* 기타 직접 입력 */}
+              {etcChecked && (
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    value={etcText}
+                    onChange={e => handleEtcText(e.target.value)}
+                    className="form-input"
+                    placeholder="보유 서류를 직접 입력해주세요"
+                    maxLength={50}
+                  />
+                </div>
+              )}
             </div>
           </>
         )}
