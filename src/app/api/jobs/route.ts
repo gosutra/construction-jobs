@@ -92,6 +92,38 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function PUT(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { id, ...fields } = body;
+    if (!id) return NextResponse.json({ error: "id 필요" }, { status: 400 });
+
+    const supabase = createServiceClient();
+    const { error } = await supabase.from("job_postings").update(fields).eq("id", id);
+    if (error) throw error;
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("Job update error:", err);
+    return NextResponse.json({ error: "수정 실패" }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    if (!id) return NextResponse.json({ error: "id 필요" }, { status: 400 });
+
+    const supabase = createServiceClient();
+    const { error } = await supabase.from("job_postings").delete().eq("id", id);
+    if (error) throw error;
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("Job delete error:", err);
+    return NextResponse.json({ error: "삭제 실패" }, { status: 500 });
+  }
+}
+
 export async function GET() {
   const supabase = createServiceClient();
   const { data, error } = await supabase
