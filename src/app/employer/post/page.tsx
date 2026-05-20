@@ -144,14 +144,14 @@ export default function EmployerPostPage() {
   return (
     <main className="min-h-screen bg-gray-50">
       {/* 헤더 */}
-      <div className="bg-blue-600 text-white px-5 pt-10 pb-6">
+      <div className="bg-[#1E3A8A] text-white px-5 pt-10 pb-6">
         <h1 className="text-xl font-bold mb-1">구인 공고 등록</h1>
-        <p className="text-blue-100 text-sm">조건 입력 후 자동 매칭이 시작됩니다</p>
+        <p className="text-blue-200 text-sm">조건 입력 후 자동 매칭이 시작됩니다</p>
         <div className="flex gap-2 mt-4">
           {STEP_LABELS.map((label, i) => (
             <div key={i} className="flex-1">
-              <div className={`h-1.5 rounded-full ${i <= step ? "bg-white" : "bg-blue-400"}`} />
-              <p className={`text-xs mt-1 ${i <= step ? "text-white" : "text-blue-300"}`}>{label}</p>
+              <div className={`h-1.5 rounded-full ${i <= step ? "bg-[#F59E0B]" : "bg-blue-700"}`} />
+              <p className={`text-xs mt-1 ${i <= step ? "text-[#F59E0B]" : "text-blue-400"}`}>{label}</p>
             </div>
           ))}
         </div>
@@ -236,7 +236,7 @@ export default function EmployerPostPage() {
         {/* ── STEP 2: 근무 조건 ── */}
         {step === 2 && (
           <>
-            <div className="text-xs text-blue-600 font-semibold bg-blue-50 rounded-lg px-3 py-2">
+            <div className="text-xs text-[#1E3A8A] font-semibold bg-blue-50 rounded-lg px-3 py-2">
               💡 알림 메시지에 모두 표시됩니다 — 재확인 전화가 줄어듭니다
             </div>
 

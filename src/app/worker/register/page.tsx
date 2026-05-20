@@ -102,14 +102,14 @@ export default function WorkerRegisterPage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <div className="bg-orange-500 text-white px-5 pt-10 pb-6">
+      <div className="bg-[#1E3A8A] text-white px-5 pt-10 pb-6">
         <h1 className="text-xl font-bold mb-1">구직 등록</h1>
-        <p className="text-orange-100 text-sm">3분이면 완료됩니다</p>
+        <p className="text-blue-200 text-sm">3분이면 완료됩니다</p>
         <div className="flex gap-2 mt-4">
           {STEP_LABELS.map((label, i) => (
             <div key={i} className="flex-1">
-              <div className={`h-1.5 rounded-full ${i <= step ? "bg-white" : "bg-orange-300"}`} />
-              <p className={`text-xs mt-1 ${i <= step ? "text-white" : "text-orange-300"}`}>{label}</p>
+              <div className={`h-1.5 rounded-full ${i <= step ? "bg-[#F59E0B]" : "bg-blue-700"}`} />
+              <p className={`text-xs mt-1 ${i <= step ? "text-[#F59E0B]" : "text-blue-400"}`}>{label}</p>
             </div>
           ))}
         </div>
@@ -118,7 +118,7 @@ export default function WorkerRegisterPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="px-5 py-6 space-y-5 max-w-lg mx-auto">
         {step === 0 && (
           <>
-            <div className="text-xs text-orange-600 font-semibold bg-orange-50 rounded-lg px-3 py-2">✨ 필수 항목 4개 — 1분이면 됩니다</div>
+            <div className="text-xs text-[#1E3A8A] font-semibold bg-blue-50 rounded-lg px-3 py-2">✨ 필수 항목 4개 — 1분이면 됩니다</div>
             <div>
               <label className="form-label">이름 *</label>
               <input {...register("name")} className="form-input" placeholder="홍길동" />
@@ -152,7 +152,7 @@ export default function WorkerRegisterPage() {
 
         {step === 1 && (
           <>
-            <div className="text-xs text-orange-600 font-semibold bg-orange-50 rounded-lg px-3 py-2">💼 경력 정보 — 매칭 정확도가 높아집니다</div>
+            <div className="text-xs text-[#1E3A8A] font-semibold bg-blue-50 rounded-lg px-3 py-2">💼 경력 정보 — 매칭 정확도가 높아집니다</div>
             <div>
               <label className="form-label">직종 *</label>
               <select {...register("job_category")} className="form-select">
@@ -211,7 +211,7 @@ export default function WorkerRegisterPage() {
 
         {step === 2 && (
           <>
-            <div className="text-xs text-orange-600 font-semibold bg-orange-50 rounded-lg px-3 py-2">🎯 근무 조건 — 딱 맞는 현장만 골라드립니다</div>
+            <div className="text-xs text-[#1E3A8A] font-semibold bg-blue-50 rounded-lg px-3 py-2">🎯 근무 조건 — 딱 맞는 현장만 골라드립니다</div>
             <div>
               <label className="form-label">근무 가능 시작일 *</label>
               <input {...register("available_from")} type="date" className="form-input" min={new Date().toISOString().split("T")[0]} />
@@ -232,7 +232,7 @@ export default function WorkerRegisterPage() {
               ].map(({ field, label, desc }) => (
                 <label key={field} className="flex items-center justify-between card cursor-pointer py-3">
                   <div><div className="font-medium text-sm text-gray-800">{label}</div><div className="text-xs text-gray-500">{desc}</div></div>
-                  <div className={`relative w-12 h-6 rounded-full transition-colors ${watch(field) ? "bg-orange-500" : "bg-gray-300"}`} onClick={() => setValue(field, !watch(field))}>
+                  <div className={`relative w-12 h-6 rounded-full transition-colors ${watch(field) ? "bg-[#1E3A8A]" : "bg-gray-300"}`} onClick={() => setValue(field, !watch(field))}>
                     <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${watch(field) ? "translate-x-6" : "translate-x-0.5"}`} />
                   </div>
                 </label>
