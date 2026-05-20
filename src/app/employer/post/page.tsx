@@ -386,7 +386,7 @@ export default function EmployerPostPage() {
           ) : (
             <button type="submit" disabled={loading}
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold py-4 px-6 rounded-xl text-lg transition-colors">
-              {loading ? "접수 중..." : "공고 접수 + 자동 매칭 시작 ✓"}
+              {loading ? "등록 중..." : "구인 공고 등록 완료 ✓"}
             </button>
           )}
           {step > 0 && (
