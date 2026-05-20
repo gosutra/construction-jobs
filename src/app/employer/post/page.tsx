@@ -68,6 +68,27 @@ export default function EmployerPostPage() {
     setValue("required_documents", updated);
   };
 
+  const [docEtcChecked, setDocEtcChecked] = useState(false);
+  const [docEtcText, setDocEtcText] = useState("");
+
+  const handleDocEtcCheck = (checked: boolean) => {
+    setDocEtcChecked(checked);
+    if (!checked) {
+      setValue("required_documents", requiredDocs.filter(d => !d.startsWith("기타:")));
+      setDocEtcText("");
+    }
+  };
+
+  const handleDocEtcText = (text: string) => {
+    setDocEtcText(text);
+    const filtered = requiredDocs.filter(d => !d.startsWith("기타:"));
+    if (text.trim()) {
+      setValue("required_documents", [...filtered, `기타:${text.trim()}`]);
+    } else {
+      setValue("required_documents", filtered);
+    }
+  };
+
   const nextStep = async () => {
     const fields: Record<number, (keyof FormData)[]> = {
       0: ["company_name", "contact_name", "contact_phone"],
@@ -300,7 +321,30 @@ export default function EmployerPostPage() {
                     <span className="text-sm text-gray-700">{doc}</span>
                   </label>
                 ))}
+                {/* 기타 항목 */}
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={docEtcChecked}
+                    onChange={e => handleDocEtcCheck(e.target.checked)}
+                    className="w-4 h-4 accent-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">기타</span>
+                </label>
               </div>
+              {/* 기타 직접 입력 */}
+              {docEtcChecked && (
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    value={docEtcText}
+                    onChange={e => handleDocEtcText(e.target.value)}
+                    className="form-input"
+                    placeholder="필요 서류를 직접 입력해주세요"
+                    maxLength={50}
+                  />
+                </div>
+              )}
             </div>
 
             <div>
