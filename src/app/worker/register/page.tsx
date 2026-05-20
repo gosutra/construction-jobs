@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { JOB_CATEGORIES, SKILL_LEVELS, CITIES, CERTIFICATIONS } from "@/types";
+import { JOB_CATEGORIES, SKILL_LEVELS, CITIES, WORKER_DOCUMENTS } from "@/types";
 
 const schema = z.object({
   name: z.string().min(2, "이름을 입력해주세요"),
@@ -44,8 +44,8 @@ export default function WorkerRegisterPage() {
   });
 
   const certifications = watch("certifications") || [];
-  const toggleCert = (cert: string) => {
-    setValue("certifications", certifications.includes(cert) ? certifications.filter(c => c !== cert) : [...certifications, cert]);
+  const toggleCert = (doc: string) => {
+    setValue("certifications", certifications.includes(doc) ? certifications.filter(c => c !== doc) : [...certifications, doc]);
   };
 
   const nextStep = async () => {
@@ -156,12 +156,12 @@ export default function WorkerRegisterPage() {
               <input {...register("experience_years")} type="number" className="form-input" placeholder="5" inputMode="numeric" />
             </div>
             <div>
-              <label className="form-label">보유 자격증 (복수 선택 가능)</label>
-              <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-1">
-                {CERTIFICATIONS.map(cert => (
-                  <label key={cert} className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={certifications.includes(cert)} onChange={() => toggleCert(cert)} className="w-4 h-4 accent-orange-500" />
-                    <span className="text-sm text-gray-700">{cert}</span>
+              <label className="form-label">보유 중인 서류 (복수 선택 가능)</label>
+              <div className="grid grid-cols-2 gap-2 p-1">
+                {WORKER_DOCUMENTS.map(doc => (
+                  <label key={doc} className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={certifications.includes(doc)} onChange={() => toggleCert(doc)} className="w-4 h-4 accent-orange-500" />
+                    <span className="text-sm text-gray-700">{doc}</span>
                   </label>
                 ))}
               </div>
