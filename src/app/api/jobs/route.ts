@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
         age_min: body.age_min || null,
         age_max: body.age_max || null,
         gender_preference: body.gender_preference || "성별무관",
+        pay_day: body.pay_day || null,
         accommodation_provided: body.accommodation_provided || false,
         transportation_provided: body.transportation_provided || false,
         meal_provided: body.meal_provided || false,

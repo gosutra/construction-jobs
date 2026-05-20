@@ -31,6 +31,7 @@ const schema = z.object({
   accommodation_provided: z.boolean().default(false),
   transportation_provided: z.boolean().default(false),
   meal_provided: z.boolean().default(false),
+  pay_day: z.string().optional(),
   required_documents: z.array(z.string()).default([]),
   document_deadline: z.string().optional(),
   description: z.string().optional(),
@@ -261,6 +262,15 @@ export default function EmployerPostPage() {
                 />
                 {errors.daily_wage && <p className="form-error">{errors.daily_wage.message}</p>}
               </div>
+            </div>
+
+            <div>
+              <label className="form-label">급여일</label>
+              <input
+                {...register("pay_day")}
+                className="form-input"
+                placeholder="예: 매주 금요일, 익월 10일, 말일 정산"
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
