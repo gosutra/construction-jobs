@@ -90,6 +90,7 @@ export interface JobPosting {
   work_end_date?: string;
   age_min?: number;
   age_max?: number;
+  gender_preference?: '남' | '여' | '성별무관';
   accommodation_provided: boolean;
   transportation_provided: boolean;
   meal_provided: boolean;        // 식사제공 추가

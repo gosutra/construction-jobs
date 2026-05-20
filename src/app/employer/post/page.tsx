@@ -27,6 +27,7 @@ const schema = z.object({
   work_end_date: z.string().optional(),
   age_min: z.coerce.number().optional(),
   age_max: z.coerce.number().optional(),
+  gender_preference: z.enum(["남", "여", "성별무관"]).default("성별무관"),
   accommodation_provided: z.boolean().default(false),
   transportation_provided: z.boolean().default(false),
   meal_provided: z.boolean().default(false),
@@ -287,6 +288,23 @@ export default function EmployerPostPage() {
               <div>
                 <label className="form-label">연령 상한</label>
                 <input {...register("age_max")} type="number" className="form-input" placeholder="60" inputMode="numeric" />
+              </div>
+            </div>
+
+            <div>
+              <label className="form-label">구인 성별</label>
+              <div className="grid grid-cols-3 gap-2">
+                {(["성별무관", "남", "여"] as const).map(g => (
+                  <label key={g} className="cursor-pointer">
+                    <input type="radio" {...register("gender_preference")} value={g} className="sr-only" />
+                    <div className={`text-center py-3 rounded-xl border-2 font-semibold text-sm transition-colors
+                      ${watch("gender_preference") === g
+                        ? "border-blue-500 bg-blue-50 text-blue-600"
+                        : "border-gray-200 text-gray-600"}`}>
+                      {g === "남" ? "👨 남" : g === "여" ? "👩 여" : "👥 성별무관"}
+                    </div>
+                  </label>
+                ))}
               </div>
             </div>
 
