@@ -8,7 +8,8 @@ import { JOB_CATEGORIES, SKILL_LEVELS, CITIES } from "@/types";
 
 const REQUIRED_DOCS = [
   "주민등록증", "외국인등록증", "건강보험자격득실확인서",
-  "안전교육이수증", "기능사자격증", "경력증명서", "통장사본",
+  "건설기초안전보건이수증", "배치전건강진단표", "비계이수증",
+  "기능사자격증", "경력증명서", "통장사본",
 ];
 
 const schema = z.object({
