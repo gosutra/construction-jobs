@@ -15,6 +15,7 @@ const schema = z.object({
       const dd = parseInt(v.substring(4,6));
       return mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31;
     }, "올바른 생년월일을 입력해주세요"),
+  gender: z.enum(["남", "여"], { required_error: "성별을 선택해주세요" }),
   city: z.string().min(1, "거주 지역을 선택해주세요"),
   job_category: z.string().min(1, "직종을 선택해주세요"),
   skill_level: z.string().min(1, "숙련도를 선택해주세요"),
@@ -72,7 +73,7 @@ export default function WorkerRegisterPage() {
 
   const nextStep = async () => {
     const fields: Record<number, (keyof FormData)[]> = {
-      0: ["name", "phone", "birth_date", "city"],
+      0: ["name", "phone", "birth_date", "gender", "city"],
       1: ["job_category", "skill_level", "experience_years"],
     };
     const valid = await trigger(fields[step]);
@@ -134,6 +135,23 @@ export default function WorkerRegisterPage() {
               <input {...register("birth_date")} className="form-input" placeholder="850315" inputMode="numeric" maxLength={6} />
               {errors.birth_date && <p className="form-error">{errors.birth_date.message}</p>}
               <p className="text-xs text-gray-400 mt-1">앞 2자리 연도 + 월 + 일 (1985년 3월 15일 → 850315)</p>
+            </div>
+            <div>
+              <label className="form-label">성별 *</label>
+              <div className="grid grid-cols-2 gap-3">
+                {(["남", "여"] as const).map(g => (
+                  <label key={g} className="cursor-pointer">
+                    <input type="radio" {...register("gender")} value={g} className="sr-only" />
+                    <div className={`text-center py-3 rounded-xl border-2 font-semibold text-sm transition-colors
+                      ${watch("gender") === g
+                        ? "border-[#1E3A8A] bg-blue-50 text-[#1E3A8A]"
+                        : "border-gray-200 text-gray-600"}`}>
+                      {g === "남" ? "👨 남성" : "👩 여성"}
+                    </div>
+                  </label>
+                ))}
+              </div>
+              {errors.gender && <p className="form-error">{errors.gender.message}</p>}
             </div>
             <div>
               <label className="form-label">거주 지역 (시/도) *</label>

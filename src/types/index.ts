@@ -56,6 +56,7 @@ export interface Worker {
   phone: string;
   birth_date?: string;   // YYMMDD 6자리
   age?: number;          // birth_date에서 계산
+  gender?: '남' | '여';
   city: string;
   district?: string;
   job_category: JobCategory;
@@ -119,6 +120,7 @@ export interface WorkerFormData {
   name: string;
   phone: string;
   birth_date: string;    // YYMMDD 6자리
+  gender: '남' | '여';
   city: string;
   district: string;
   job_category: JobCategory;

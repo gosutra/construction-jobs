@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
       phone: body.phone,
       birth_date: body.birth_date || null,
       age,
+      gender: body.gender || null,
       city: body.city,
       district: body.district || null,
       job_category: body.job_category,

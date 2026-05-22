@@ -43,6 +43,7 @@ function WorkerEditModal({ worker, onSave, onClose }: {
     name: worker.name,
     phone: worker.phone,
     birth_date: worker.birth_date || "",
+    gender: (worker as Worker & { gender?: string }).gender || "",
     city: worker.city,
     job_category: worker.job_category,
     skill_level: worker.skill_level,
@@ -87,6 +88,19 @@ function WorkerEditModal({ worker, onSave, onClose }: {
             <div>
               <label className="form-label">생년월일 6자리 (YYMMDD)</label>
               <input value={form.birth_date} onChange={e => set("birth_date", e.target.value)} className="form-input" placeholder="850315" maxLength={6} inputMode="numeric" />
+            </div>
+            {/* 성별 */}
+            <div>
+              <label className="form-label">성별</label>
+              <div className="grid grid-cols-2 gap-2">
+                {["남", "여"].map(g => (
+                  <button key={g} type="button" onClick={() => set("gender", g)}
+                    className={`py-2.5 rounded-xl border-2 text-sm font-semibold transition-colors
+                      ${form.gender === g ? "border-[#1E3A8A] bg-blue-50 text-[#1E3A8A]" : "border-gray-200 text-gray-600"}`}>
+                    {g === "남" ? "👨 남성" : "👩 여성"}
+                  </button>
+                ))}
+              </div>
             </div>
             {/* 지역 */}
             <div>
@@ -346,6 +360,7 @@ export default function AdminPage() {
       이름: w.name,
       휴대폰: w.phone,
       생년월일: w.birth_date || "",
+      성별: (w as Worker & { gender?: string }).gender ?? "",
       나이: w.age ?? "",
       거주지역: w.city,
       직종: w.job_category,
@@ -363,7 +378,7 @@ export default function AdminPage() {
     const ws = XLSX.utils.json_to_sheet(rows);
     // 열 너비 자동 설정
     ws["!cols"] = [
-      { wch: 8 }, { wch: 14 }, { wch: 10 }, { wch: 6 },
+      { wch: 8 }, { wch: 14 }, { wch: 10 }, { wch: 6 }, { wch: 6 },
       { wch: 8 }, { wch: 14 }, { wch: 8 }, { wch: 8 },
       { wch: 10 }, { wch: 8 }, { wch: 8 }, { wch: 8 },
       { wch: 30 }, { wch: 8 }, { wch: 20 }, { wch: 12 },
@@ -569,6 +584,9 @@ export default function AdminPage() {
                   <span className="badge bg-gray-100 text-gray-600">{w.city}</span>
                   {w.experience_years > 0 && <span className="badge bg-gray-100 text-gray-600">경력 {w.experience_years}년</span>}
                   {w.age && <span className="badge bg-gray-100 text-gray-600">{w.age}세</span>}
+                  {(w as Worker & { gender?: string }).gender && (
+                    <span className="badge bg-purple-100 text-purple-700">{(w as Worker & { gender?: string }).gender === "남" ? "👨 남" : "👩 여"}</span>
+                  )}
                 </div>
                 {w.certifications?.length ? (
                   <div className="text-xs text-gray-500 mb-3">자격증: {w.certifications.join(", ")}</div>
