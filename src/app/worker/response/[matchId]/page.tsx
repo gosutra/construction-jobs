@@ -108,26 +108,26 @@ export default function WorkerResponsePage() {
               <div key={row.label} className="flex items-center gap-3">
                 <span className="text-xl w-7">{row.icon}</span>
                 <div className="flex-1 flex justify-between">
-                  <span className="text-sm text-gray-500">{row.label}</span>
-                  <span className="text-sm font-semibold text-gray-800">{row.value}</span>
+                  <span className="text-base text-gray-500">{row.label}</span>
+                  <span className="text-base font-semibold text-gray-800">{row.value}</span>
                 </div>
               </div>
             ))}
           </div>
           {job.required_documents?.length ? (
             <div className="mt-4 pt-4 border-t border-gray-100">
-              <p className="text-xs text-gray-500 mb-1">📋 필요 서류</p>
-              <p className="text-sm text-gray-700">{job.required_documents.join(", ")}</p>
+              <p className="text-sm text-gray-500 mb-1">📋 필요 서류</p>
+              <p className="text-base text-gray-700">{job.required_documents.join(", ")}</p>
             </div>
           ) : null}
           {job.description && (
             <div className="mt-3 pt-3 border-t border-gray-100">
-              <p className="text-xs text-gray-500 mb-1">📝 특이사항</p>
-              <p className="text-sm text-gray-700">{job.description}</p>
+              <p className="text-sm text-gray-500 mb-1">📝 특이사항</p>
+              <p className="text-base text-gray-700">{job.description}</p>
             </div>
           )}
         </div>
-        <p className="text-sm text-gray-600 text-center mb-4 font-medium">이 현장에 관심이 있으신가요?</p>
+        <p className="text-base text-gray-600 text-center mb-4 font-medium">이 현장에 관심이 있으신가요?</p>
         <div className="space-y-3">
           <button onClick={() => respond("interested")} disabled={submitting} className="btn-primary">
             {submitting ? "처리 중..." : "✅ 네, 지원하고 싶습니다"}
@@ -136,7 +136,7 @@ export default function WorkerResponsePage() {
             이번엔 괜찮습니다
           </button>
         </div>
-        <p className="text-xs text-gray-400 text-center mt-4">지원 의향을 밝히시면 담당자가 직접 연락드립니다</p>
+        <p className="text-sm text-gray-400 text-center mt-4">지원 의향을 밝히시면 담당자가 직접 연락드립니다</p>
       </div>
     </main>
   );

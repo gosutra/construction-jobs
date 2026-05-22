@@ -180,12 +180,12 @@ export default function EmployerPostPage() {
       {/* 헤더 */}
       <div className="bg-[#1E3A8A] text-white px-5 pt-10 pb-6">
         <h1 className="text-xl font-bold mb-1">구인 공고 등록</h1>
-        <p className="text-blue-200 text-sm">조건 입력 후 자동 매칭이 시작됩니다</p>
+        <p className="text-blue-200 text-base">조건 입력 후 자동 매칭이 시작됩니다</p>
         <div className="flex gap-2 mt-4">
           {STEP_LABELS.map((label, i) => (
             <div key={i} className="flex-1">
               <div className={`h-1.5 rounded-full ${i <= step ? "bg-[#F59E0B]" : "bg-blue-700"}`} />
-              <p className={`text-xs mt-1 ${i <= step ? "text-[#F59E0B]" : "text-blue-400"}`}>{label}</p>
+              <p className={`text-sm mt-1 ${i <= step ? "text-[#F59E0B]" : "text-blue-400"}`}>{label}</p>
             </div>
           ))}
         </div>
@@ -272,23 +272,23 @@ export default function EmployerPostPage() {
                     {tier.enabled && (
                       <div className="px-4 pb-4 grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-xs font-semibold text-[#1E3A8A] mb-1 block">일당 (원) *</label>
+                          <label className="text-sm font-semibold text-[#1E3A8A] mb-1 block">일당 (원) *</label>
                           <input
                             type="number"
                             value={tier.daily_wage}
                             onChange={e => updateTier(idx, "daily_wage", e.target.value)}
-                            className="form-input text-sm py-2.5"
+                            className="form-input text-base py-2.5"
                             placeholder="200000"
                             inputMode="numeric"
                           />
                         </div>
                         <div>
-                          <label className="text-xs font-semibold text-[#1E3A8A] mb-1 block">필요 인원 (명) *</label>
+                          <label className="text-sm font-semibold text-[#1E3A8A] mb-1 block">필요 인원 (명) *</label>
                           <input
                             type="number"
                             value={tier.workers_needed}
                             onChange={e => updateTier(idx, "workers_needed", e.target.value)}
-                            className="form-input text-sm py-2.5"
+                            className="form-input text-base py-2.5"
                             placeholder="3"
                             inputMode="numeric"
                           />
@@ -306,13 +306,13 @@ export default function EmployerPostPage() {
         {/* ── STEP 2: 근무 조건 ── */}
         {step === 2 && (
           <>
-            <div className="text-xs text-[#1E3A8A] font-semibold bg-blue-50 rounded-lg px-3 py-2">
+            <div className="text-sm text-[#1E3A8A] font-semibold bg-blue-50 rounded-lg px-3 py-2.5">
               💡 알림 메시지에 모두 표시됩니다 — 재확인 전화가 줄어듭니다
             </div>
 
             {/* 선택된 티어 요약 */}
             <div className="bg-white rounded-2xl border border-gray-200 p-4">
-              <p className="text-xs font-bold text-gray-500 mb-2">📋 등록 예정 공고</p>
+              <p className="text-sm font-bold text-gray-500 mb-2">📋 등록 예정 공고</p>
               <div className="space-y-1.5">
                 {tiers.filter(t => t.enabled).map(t => (
                   <div key={t.skill_level} className="flex items-center justify-between text-sm">
@@ -359,7 +359,7 @@ export default function EmployerPostPage() {
                 {(["성별무관", "남", "여"] as const).map(g => (
                   <label key={g} className="cursor-pointer">
                     <input type="radio" {...register("gender_preference")} value={g} className="sr-only" />
-                    <div className={`text-center py-3 rounded-xl border-2 font-semibold text-sm transition-colors
+                    <div className={`text-center py-3 rounded-xl border-2 font-semibold text-base transition-colors
                       ${watch("gender_preference") === g ? "border-[#1E3A8A] bg-blue-50 text-[#1E3A8A]" : "border-gray-200 text-gray-600"}`}>
                       {g === "남" ? "👨 남" : g === "여" ? "👩 여" : "👥 성별무관"}
                     </div>
@@ -375,7 +375,7 @@ export default function EmployerPostPage() {
                 { field: "meal_provided" as const, label: "🍱 식사 제공" },
               ]).map(({ field, label }) => (
                 <label key={field} className="flex items-center justify-between card cursor-pointer py-3">
-                  <span className="font-medium text-sm text-gray-800">{label}</span>
+                  <span className="font-medium text-base text-gray-800">{label}</span>
                   <div className={`relative w-12 h-6 rounded-full transition-colors ${watch(field) ? "bg-[#1E3A8A]" : "bg-gray-300"}`}
                     onClick={() => setValue(field, !watch(field))}>
                     <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${watch(field) ? "translate-x-6" : "translate-x-0.5"}`} />
@@ -395,12 +395,12 @@ export default function EmployerPostPage() {
                 {REQUIRED_DOCS.map(doc => (
                   <label key={doc} className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" checked={requiredDocs.includes(doc)} onChange={() => toggleDoc(doc)} className="w-4 h-4 accent-blue-500" />
-                    <span className="text-sm text-gray-700">{doc}</span>
+                    <span className="text-base text-gray-700">{doc}</span>
                   </label>
                 ))}
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={docEtcChecked} onChange={e => handleDocEtcCheck(e.target.checked)} className="w-4 h-4 accent-blue-500" />
-                  <span className="text-sm text-gray-700">기타</span>
+                  <span className="text-base text-gray-700">기타</span>
                 </label>
               </div>
               {docEtcChecked && (
@@ -416,7 +416,7 @@ export default function EmployerPostPage() {
               <textarea {...register("description")} className="form-input" rows={3} placeholder="예: 야간작업 있음, 안전화 지참 필수 등" />
             </div>
 
-            {error && <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-600 text-sm">{error}</div>}
+            {error && <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-600 text-base">{error}</div>}
           </>
         )}
 
@@ -436,7 +436,7 @@ export default function EmployerPostPage() {
             </button>
           )}
           {step > 0 && (
-            <button type="button" onClick={() => setStep(s => s - 1)} className="w-full text-gray-500 text-sm py-2">
+            <button type="button" onClick={() => setStep(s => s - 1)} className="w-full text-gray-500 text-base py-2.5">
               ← 이전으로
             </button>
           )}

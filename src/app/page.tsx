@@ -39,7 +39,7 @@ export default function HomePage() {
         <h1 className="text-[#F59E0B] text-2xl font-bold leading-snug mb-2 tracking-tight">
           건설현장 인력 플랫폼
         </h1>
-        <p className="text-blue-100 text-sm leading-relaxed">
+        <p className="text-blue-100 text-base leading-relaxed">
           등록만 하면 조건에 맞는 현장을<br />
           <span className="text-white font-semibold">카카오 알림</span>으로 먼저 알려드립니다
         </p>
@@ -54,7 +54,7 @@ export default function HomePage() {
             <span className="text-3xl">👷</span>
             <div>
               <p className="font-bold text-[#1F2937] text-base">구직자 (노동자)</p>
-              <p className="text-amber-700 text-xs">현장이 먼저 연락해 옵니다</p>
+              <p className="text-amber-700 text-sm">현장이 먼저 연락해 옵니다</p>
             </div>
           </div>
           <div className="px-5 py-4 space-y-2">
@@ -63,7 +63,7 @@ export default function HomePage() {
               "일당·숙소·교통 조건이 명확히 표시",
               "3분 등록으로 평생 관리",
             ].map(t => (
-              <div key={t} className="flex items-start gap-2 text-sm text-[#1F2937]">
+              <div key={t} className="flex items-start gap-2 text-base text-[#1F2937]">
                 <span className="text-[#F59E0B] font-bold mt-0.5">✓</span>
                 <span>{t}</span>
               </div>
@@ -92,7 +92,7 @@ export default function HomePage() {
             <span className="text-3xl">🏢</span>
             <div>
               <p className="font-bold text-[#1F2937] text-base">구인업체 (건설사)</p>
-              <p className="text-blue-600 text-xs">조건 입력 → 자동 매칭 시작</p>
+              <p className="text-blue-600 text-sm">조건 입력 → 자동 매칭 시작</p>
             </div>
           </div>
           <div className="px-5 py-4 space-y-2">
@@ -101,7 +101,7 @@ export default function HomePage() {
               "검증된 숙련도·보유 서류 정보 제공",
               "재확인 전화 없이 즉시 투입 가능",
             ].map(t => (
-              <div key={t} className="flex items-start gap-2 text-sm text-[#1F2937]">
+              <div key={t} className="flex items-start gap-2 text-base text-[#1F2937]">
                 <span className="text-[#1E3A8A] font-bold mt-0.5">✓</span>
                 <span>{t}</span>
               </div>
@@ -139,8 +139,8 @@ export default function HomePage() {
                   </div>
                   <span className="text-xl">{item.icon}</span>
                   <div>
-                    <p className="font-semibold text-sm text-[#1F2937]">{item.title}</p>
-                    <p className="text-xs text-gray-500">{item.desc}</p>
+                    <p className="font-semibold text-base text-[#1F2937]">{item.title}</p>
+                    <p className="text-sm text-gray-500">{item.desc}</p>
                   </div>
                 </div>
               ))}
