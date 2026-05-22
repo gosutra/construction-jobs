@@ -12,6 +12,7 @@ interface MatchInfo {
     daily_wage: number; work_start_date: string; work_end_date?: string;
     location_city: string; location_district?: string;
     accommodation_provided: boolean; transportation_provided: boolean;
+    meal_provided: boolean;
     required_documents?: string[]; description?: string;
   };
   worker: { name: string };
@@ -87,8 +88,8 @@ export default function WorkerResponsePage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <div className="bg-orange-500 text-white px-5 pt-10 pb-6">
-        <p className="text-orange-100 text-sm mb-1">안녕하세요, {matchInfo!.worker.name}님</p>
+      <div className="bg-[#1E3A8A] text-white px-5 pt-10 pb-6">
+        <p className="text-blue-200 text-sm mb-1">안녕하세요, {matchInfo!.worker.name}님</p>
         <h1 className="text-xl font-bold">조건에 맞는 현장이 있습니다!</h1>
       </div>
       <div className="px-5 py-6 max-w-lg mx-auto">
@@ -102,6 +103,7 @@ export default function WorkerResponsePage() {
               { icon: "📅", label: "근무 기간", value: `${startDate} ~ ${endDate}` },
               { icon: "🏠", label: "숙소", value: job.accommodation_provided ? "✅ 제공" : "❌ 미제공" },
               { icon: "🚌", label: "교통", value: job.transportation_provided ? "✅ 제공" : "❌ 미제공" },
+              { icon: "🍱", label: "식사", value: job.meal_provided ? "✅ 제공" : "❌ 미제공" },
             ].map(row => (
               <div key={row.label} className="flex items-center gap-3">
                 <span className="text-xl w-7">{row.icon}</span>

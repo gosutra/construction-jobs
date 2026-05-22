@@ -9,8 +9,9 @@ const COOLSMS_API_KEY = process.env.COOLSMS_API_KEY!;
 const COOLSMS_API_SECRET = process.env.COOLSMS_API_SECRET!;
 const SENDER_PHONE = process.env.COOLSMS_SENDER_PHONE!;
 const KAKAO_CHANNEL_ID = process.env.KAKAO_CHANNEL_ID!;
-const KAKAO_TEMPLATE_ID = process.env.KAKAO_TEMPLATE_WORKER_MATCH!;
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://your-domain.vercel.app';
+const KAKAO_TEMPLATE_ID = process.env.KAKAO_TEMPLATE_MATCH!;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
 /** 구직자에게 발송할 매칭 메시지 생성 */
 function buildMatchMessage(worker: Worker, job: JobPosting, matchId: string): string {

@@ -91,10 +91,12 @@ export interface JobPosting {
   age_min?: number;
   age_max?: number;
   gender_preference?: '남' | '여' | '성별무관';
+  pay_day?: string;
   accommodation_provided: boolean;
   transportation_provided: boolean;
-  meal_provided: boolean;        // 식사제공 추가
+  meal_provided: boolean;
   required_documents?: string[];
+  document_deadline?: string;
   description?: string;
   status: 'open' | 'filled' | 'cancelled';
   created_at: string;
@@ -146,9 +148,12 @@ export interface JobPostingFormData {
   work_end_date: string;
   age_min: number;
   age_max: number;
+  gender_preference: '남' | '여' | '성별무관';
+  pay_day: string;
   accommodation_provided: boolean;
   transportation_provided: boolean;
-  meal_provided: boolean;        // 식사제공 추가
+  meal_provided: boolean;
   required_documents: string[];
+  document_deadline: string;
   description: string;
 }

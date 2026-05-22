@@ -33,7 +33,7 @@ export async function PATCH(req: NextRequest) {
       try {
         const { sendSMS } = await import("@/lib/notifications");
         await sendSMS(job.contact_phone, message);
-      } catch { /* SMS 실패해도 계속 */ }
+      } catch (smsErr) { console.error("SMS to employer failed:", smsErr); }
     }
     return NextResponse.json({ success: true, response });
   } catch (err) {

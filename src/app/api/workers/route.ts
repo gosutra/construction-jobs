@@ -83,7 +83,10 @@ export async function GET(req: NextRequest) {
   const supabase = createServiceClient();
   const { searchParams } = new URL(req.url);
 
-  let query = supabase.from("workers").select("*").eq("is_active", true);
+  const isAdmin = searchParams.get("admin") === "true";
+  let query = isAdmin
+    ? supabase.from("workers").select("*")
+    : supabase.from("workers").select("*").eq("is_active", true);
 
   if (searchParams.get("city")) query = query.eq("city", searchParams.get("city")!);
   if (searchParams.get("job_category")) query = query.eq("job_category", searchParams.get("job_category")!);

@@ -109,7 +109,7 @@ function WorkerEditModal({ worker, onSave, onClose }: {
                 {SKILL_LEVELS.map(lv => (
                   <button key={lv} type="button" onClick={() => set("skill_level", lv)}
                     className={`py-2.5 rounded-xl border-2 text-sm font-semibold transition-colors
-                      ${form.skill_level === lv ? "border-orange-500 bg-orange-50 text-orange-600" : "border-gray-200 text-gray-600"}`}>
+                      ${form.skill_level === lv ? "border-[#F59E0B] bg-amber-50 text-amber-600" : "border-gray-200 text-gray-600"}`}>
                     {lv}
                   </button>
                 ))}
@@ -134,7 +134,7 @@ function WorkerEditModal({ worker, onSave, onClose }: {
             ] as { k: keyof typeof form; label: string }[]).map(({ k, label }) => (
               <label key={k} className="flex items-center justify-between cursor-pointer py-1">
                 <span className="text-sm text-gray-700">{label}</span>
-                <div className={`relative w-11 h-6 rounded-full transition-colors ${form[k] ? "bg-orange-500" : "bg-gray-300"}`}
+                <div className={`relative w-11 h-6 rounded-full transition-colors ${form[k] ? "bg-[#1E3A8A]" : "bg-gray-300"}`}
                   onClick={() => set(k, !form[k])}>
                   <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${form[k] ? "translate-x-5" : "translate-x-0.5"}`} />
                 </div>
@@ -149,7 +149,7 @@ function WorkerEditModal({ worker, onSave, onClose }: {
           <div className="px-5 pb-5 flex gap-3">
             <button onClick={onClose} className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-600 font-medium">취소</button>
             <button onClick={handleSave} disabled={saving}
-              className="flex-1 py-3 rounded-xl bg-orange-500 text-white font-bold disabled:opacity-50">
+              className="flex-1 py-3 rounded-xl bg-[#1E3A8A] text-white font-bold disabled:opacity-50">
               {saving ? "저장 중..." : "저장"}
             </button>
           </div>
@@ -443,7 +443,7 @@ export default function AdminPage() {
     setLoading(true);
     try {
       if (t === "workers") {
-        const res = await fetch("/api/workers");
+        const res = await fetch("/api/workers?admin=true");
         const json = await res.json();
         setWorkers(json.workers || []);
       } else if (t === "jobs") {

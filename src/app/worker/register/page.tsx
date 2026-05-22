@@ -167,7 +167,7 @@ export default function WorkerRegisterPage() {
                 {SKILL_LEVELS.map(level => (
                   <label key={level} className="cursor-pointer">
                     <input type="radio" {...register("skill_level")} value={level} className="sr-only" />
-                    <div className={`text-center py-3 rounded-xl border-2 font-semibold text-sm transition-colors ${watch("skill_level") === level ? "border-orange-500 bg-orange-50 text-orange-600" : "border-gray-200 text-gray-600"}`}>{level}</div>
+                    <div className={`text-center py-3 rounded-xl border-2 font-semibold text-sm transition-colors ${watch("skill_level") === level ? "border-[#F59E0B] bg-amber-50 text-amber-600" : "border-gray-200 text-gray-600"}`}>{level}</div>
                   </label>
                 ))}
               </div>
