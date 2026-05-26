@@ -263,7 +263,7 @@ export default function WorkerRegisterPage() {
             </div>
             {/* 개인정보 수집·이용 동의 */}
             <div className={`rounded-xl border-2 p-4 transition-colors ${watch("privacy_agreed") ? "border-[#1E3A8A] bg-blue-50" : "border-gray-200 bg-white"}`}>
-              <p className="text-sm font-bold text-gray-700 mb-2">[필수] 개인정보 수집 및 이용 동의</p>
+              <p className="form-label">[필수] 개인정보 수집 및 이용 동의</p>
               <p className="text-sm text-gray-600 leading-relaxed mb-4">
                 <span className="font-semibold">(주)대신인력개발원</span>은 서비스 제공을 위해 성명, 연락처, 매칭 정보를 수집하며,
                 회원 탈퇴 시까지 보유합니다. 귀하는 동의를 거부할 권리가 있으나
