@@ -28,6 +28,7 @@ const schema = z.object({
   has_car: z.boolean().default(false),
   certifications: z.array(z.string()).default([]),
   notes: z.string().optional(),
+  privacy_agreed: z.boolean().refine(v => v === true, "개인정보 수집·이용에 동의해주세요"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -41,7 +42,7 @@ export default function WorkerRegisterPage() {
 
   const { register, handleSubmit, watch, setValue, formState: { errors }, trigger } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { need_accommodation: false, need_transportation: false, has_car: false, certifications: [], experience_years: 0 },
+    defaultValues: { need_accommodation: false, need_transportation: false, has_car: false, certifications: [], experience_years: 0, privacy_agreed: false },
   });
 
   const certifications = watch("certifications") || [];
@@ -259,6 +260,27 @@ export default function WorkerRegisterPage() {
             <div>
               <label className="form-label">특이사항 (선택)</label>
               <textarea {...register("notes")} className="form-input" rows={3} placeholder="예: 고소작업 불가, 야간작업 가능 등" />
+            </div>
+            {/* 개인정보 수집·이용 동의 */}
+            <div className={`rounded-xl border-2 p-4 transition-colors ${watch("privacy_agreed") ? "border-[#1E3A8A] bg-blue-50" : "border-gray-200 bg-white"}`}>
+              <p className="text-sm font-bold text-gray-700 mb-2">[필수] 개인정보 수집 및 이용 동의</p>
+              <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                <span className="font-semibold">(주)대신인력개발원</span>은 서비스 제공을 위해 성명, 연락처, 매칭 정보를 수집하며,
+                회원 탈퇴 시까지 보유합니다. 귀하는 동의를 거부할 권리가 있으나
+                거부 시 서비스 이용이 제한될 수 있습니다.
+              </p>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <div
+                  className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors
+                    ${watch("privacy_agreed") ? "bg-[#1E3A8A] border-[#1E3A8A]" : "bg-white border-gray-300"}`}
+                  onClick={() => setValue("privacy_agreed", !watch("privacy_agreed"), { shouldValidate: true })}
+                >
+                  {watch("privacy_agreed") && <span className="text-white text-sm font-bold">✓</span>}
+                </div>
+                <input type="checkbox" {...register("privacy_agreed")} className="sr-only" />
+                <span className="text-base font-semibold text-gray-800">위 내용을 확인하였으며 동의합니다</span>
+              </label>
+              {errors.privacy_agreed && <p className="form-error mt-2">{errors.privacy_agreed.message}</p>}
             </div>
             {error && <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-600 text-sm">{error}</div>}
           </>
