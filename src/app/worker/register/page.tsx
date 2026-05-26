@@ -270,14 +270,11 @@ export default function WorkerRegisterPage() {
                 거부 시 서비스 이용이 제한될 수 있습니다.
               </p>
               <label className="flex items-center gap-3 cursor-pointer">
-                <div
-                  className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors
-                    ${watch("privacy_agreed") ? "bg-[#1E3A8A] border-[#1E3A8A]" : "bg-white border-gray-300"}`}
-                  onClick={() => setValue("privacy_agreed", !watch("privacy_agreed"), { shouldValidate: true })}
-                >
-                  {watch("privacy_agreed") && <span className="text-white text-sm font-bold">✓</span>}
-                </div>
-                <input type="checkbox" {...register("privacy_agreed")} className="sr-only" />
+                <input
+                  type="checkbox"
+                  {...register("privacy_agreed")}
+                  className="w-6 h-6 flex-shrink-0 cursor-pointer accent-[#1E3A8A]"
+                />
                 <span className="text-base font-semibold text-gray-800">위 내용을 확인하였으며 동의합니다</span>
               </label>
               {errors.privacy_agreed && <p className="form-error mt-2">{errors.privacy_agreed.message}</p>}
