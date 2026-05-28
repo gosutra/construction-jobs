@@ -31,8 +31,9 @@ export async function findMatchingWorkers(job: JobPosting): Promise<Worker[]> {
     return aLocal - bLocal;
   });
 
-  // 필요 인원의 3배수 추출 (선택권 제공)
-  return sorted.slice(0, job.workers_needed * 3);
+  // 필요 인원의 3배수 추출 (최대 50명 상한 — 의도치 않은 대량 발송 방지)
+  const MAX_NOTIFY = 50;
+  return sorted.slice(0, Math.min(job.workers_needed * 3, MAX_NOTIFY));
 }
 
 /**

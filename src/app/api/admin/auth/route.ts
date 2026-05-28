@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 
 // 로그인: 비밀번호 확인 후 세션 쿠키 발급
 export async function POST(req: NextRequest) {
@@ -11,7 +12,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "서버 설정 오류" }, { status: 500 });
   }
 
-  if (password !== adminPassword) {
+  // 타이밍 공격 방어: 두 값을 SHA-256으로 해시 후 timingSafeEqual로 비교
+  const inputHash  = crypto.createHash("sha256").update(password).digest();
+  const secretHash = crypto.createHash("sha256").update(adminPassword).digest();
+  if (!crypto.timingSafeEqual(inputHash, secretHash)) {
     return NextResponse.json({ error: "비밀번호가 틀렸습니다" }, { status: 401 });
   }
 

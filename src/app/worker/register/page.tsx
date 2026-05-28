@@ -11,10 +11,20 @@ const schema = z.object({
   birth_date: z.string()
     .regex(/^\d{6}$/, "생년월일 6자리를 입력해주세요 (예: 850315)")
     .refine(v => {
-      const mm = parseInt(v.substring(2,4));
-      const dd = parseInt(v.substring(4,6));
-      return mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31;
-    }, "올바른 생년월일을 입력해주세요"),
+      const yy = parseInt(v.substring(0, 2));
+      const mm = parseInt(v.substring(2, 4));
+      const dd = parseInt(v.substring(4, 6));
+      // 현재 연도 기준으로 세기 판별 (미래 연도 방지)
+      const currentYY = new Date().getFullYear() % 100;
+      const fullYear  = yy > currentYY ? 1900 + yy : 2000 + yy;
+      // Date 생성자로 윤년 포함 실제 존재하는 날짜인지 검증
+      const date = new Date(fullYear, mm - 1, dd);
+      return (
+        date.getFullYear() === fullYear &&
+        date.getMonth()    === mm - 1  &&
+        date.getDate()     === dd
+      );
+    }, "올바른 생년월일을 입력해주세요 (예: 850315)"),
   gender: z.enum(["남", "여"], { required_error: "성별을 선택해주세요" }),
   city: z.string().min(1, "거주 지역을 선택해주세요"),
   job_category: z.string().min(1, "직종을 선택해주세요"),

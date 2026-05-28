@@ -42,7 +42,9 @@ export function calcAgeFromBirthDate(birthDate: string): number {
   const yy = parseInt(birthDate.substring(0, 2));
   const mm = parseInt(birthDate.substring(2, 4));
   const dd = parseInt(birthDate.substring(4, 6));
-  const fullYear = yy > 30 ? 1900 + yy : 2000 + yy;
+  // 현재 연도 기준으로 세기 판별 (미래 연도 방지)
+  const currentYY = new Date().getFullYear() % 100;
+  const fullYear  = yy > currentYY ? 1900 + yy : 2000 + yy;
   const today = new Date();
   let age = today.getFullYear() - fullYear;
   const bMonth = mm - 1;

@@ -122,32 +122,28 @@ export default function EmployerPostPage() {
 
     setLoading(true); setError("");
     try {
-      let totalMatch = 0;
-      let successCount = 0;
-
-      // 숙련도별 공고 개별 등록
-      for (const tier of activeTiers) {
-        const payload = {
-          ...data,
-          skill_level_required: tier.skill_level,
-          daily_wage: Number(tier.daily_wage),
-          workers_needed: Number(tier.workers_needed),
-        };
-        const res = await fetch("/api/jobs", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) {
+      // 숙련도별 공고 병렬 등록 (Promise.all — 순차 대비 빠름)
+      const results = await Promise.all(
+        activeTiers.map(async tier => {
+          const res = await fetch("/api/jobs", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...data,
+              skill_level_required: tier.skill_level,
+              daily_wage:    Number(tier.daily_wage),
+              workers_needed: Number(tier.workers_needed),
+            }),
+          });
           const json = await res.json();
-          throw new Error(json.error || "접수 실패");
-        }
-        const json = await res.json();
-        totalMatch += json.matchCount || 0;
-        successCount++;
-      }
+          if (!res.ok) throw new Error(json.error || "접수 실패");
+          return json as { matchCount?: number };
+        })
+      );
+
+      const totalMatch = results.reduce((sum, r) => sum + (r.matchCount ?? 0), 0);
       setMatchCount(totalMatch);
-      setCreatedCount(successCount);
+      setCreatedCount(results.length);
       setSubmitted(true);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "오류가 발생했습니다");

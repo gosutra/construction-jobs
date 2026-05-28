@@ -24,6 +24,7 @@ export default function WorkerResponsePage() {
   const [matchInfo, setMatchInfo] = useState<MatchInfo | null>(null);
   const [finalResponse, setFinalResponse] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     fetch(`/api/match?matchId=${matchId}`)
@@ -41,6 +42,7 @@ export default function WorkerResponsePage() {
 
   const respond = async (response: "interested" | "not_interested") => {
     setSubmitting(true);
+    setSubmitError("");
     try {
       const res = await fetch("/api/match", {
         method: "PATCH",
@@ -48,9 +50,17 @@ export default function WorkerResponsePage() {
         body: JSON.stringify({ matchId, response }),
       });
       const data = await res.json();
+      if (!res.ok && res.status !== 409) {
+        setSubmitError(data.error || "오류가 발생했습니다. 다시 시도해주세요.");
+        return;
+      }
       setFinalResponse(res.status === 409 ? data.response : response);
       setStatus("already_responded");
-    } finally { setSubmitting(false); }
+    } catch {
+      setSubmitError("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (status === "loading") return (
@@ -136,6 +146,11 @@ export default function WorkerResponsePage() {
             이번엔 괜찮습니다
           </button>
         </div>
+        {submitError && (
+          <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-600 text-sm text-center">
+            ⚠️ {submitError}
+          </div>
+        )}
         <p className="text-sm text-gray-400 text-center mt-4">지원 의향을 밝히시면 담당자가 직접 연락드립니다</p>
       </div>
     </main>

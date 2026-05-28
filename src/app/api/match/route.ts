@@ -1,5 +1,6 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
+import { requireAdmin } from "@/lib/apiAuth";
 
 // 구직자 응답 처리
 export async function PATCH(req: NextRequest) {
@@ -66,7 +67,10 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  // 목록 조회 (관리자용)
+  // 목록 조회 (관리자 전용 — 인증 필요)
+  const authError = requireAdmin(req);
+  if (authError) return authError;
+
   let query = supabase
     .from("matches")
     .select(`*,

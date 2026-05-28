@@ -341,6 +341,7 @@ export default function AdminPage() {
   const [jobs, setJobs] = useState<JobPosting[]>([]);
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(false);
+  const [fetchError, setFetchError] = useState("");
 
   // 수정 모달
   const [editWorker, setEditWorker] = useState<Worker | null>(null);
@@ -348,6 +349,13 @@ export default function AdminPage() {
 
   // 삭제 확인
   const [deleteTarget, setDeleteTarget] = useState<{ type: "worker" | "job"; id: string; name: string } | null>(null);
+
+  // 토스트 알림
+  const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
+  const showToast = (msg: string, ok = true) => {
+    setToast({ msg, ok });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   const handleLogout = async () => {
     await fetch("/api/admin/auth", { method: "DELETE" });
@@ -456,18 +464,22 @@ export default function AdminPage() {
 
   const fetchData = useCallback(async (t: Tab) => {
     setLoading(true);
+    setFetchError("");
     try {
       if (t === "workers") {
         const res = await fetch("/api/workers?admin=true");
         const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "구직자 데이터 로드 실패");
         setWorkers(json.workers || []);
       } else if (t === "jobs") {
         const res = await fetch("/api/jobs");
         const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "구인공고 데이터 로드 실패");
         setJobs(json.jobs || []);
       } else {
         const res = await fetch("/api/match");
         const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "매칭 데이터 로드 실패");
         const normalized = (json.matches || []).map((m: Record<string, unknown>) => ({
           ...m,
           worker: m.workers ?? m.worker,
@@ -475,6 +487,9 @@ export default function AdminPage() {
         }));
         setMatches(normalized);
       }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "데이터를 불러오지 못했습니다";
+      setFetchError(msg);
     } finally {
       setLoading(false);
     }
@@ -489,18 +504,27 @@ export default function AdminPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updated),
     });
+    const json = await res.json();
     if (res.ok) {
       setEditWorker(null);
       fetchData("workers");
+      showToast("구직자 정보를 저장했습니다");
+    } else {
+      showToast(json.error || "저장에 실패했습니다", false);
     }
   };
 
   /* 구직자 삭제 */
   const handleWorkerDelete = async (id: string) => {
     const res = await fetch(`/api/workers?id=${id}`, { method: "DELETE" });
+    const json = await res.json();
     if (res.ok) {
       setDeleteTarget(null);
       setWorkers(prev => prev.filter(w => w.id !== id));
+      showToast("구직자를 삭제했습니다");
+    } else {
+      setDeleteTarget(null);
+      showToast(json.error || "삭제에 실패했습니다", false);
     }
   };
 
@@ -511,18 +535,27 @@ export default function AdminPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updated),
     });
+    const json = await res.json();
     if (res.ok) {
       setEditJob(null);
       fetchData("jobs");
+      showToast("공고를 저장했습니다");
+    } else {
+      showToast(json.error || "저장에 실패했습니다", false);
     }
   };
 
   /* 구인공고 삭제 */
   const handleJobDelete = async (id: string) => {
     const res = await fetch(`/api/jobs?id=${id}`, { method: "DELETE" });
+    const json = await res.json();
     if (res.ok) {
       setDeleteTarget(null);
       setJobs(prev => prev.filter(j => j.id !== id));
+      showToast("공고를 삭제했습니다");
+    } else {
+      setDeleteTarget(null);
+      showToast(json.error || "삭제에 실패했습니다", false);
     }
   };
 
@@ -542,6 +575,14 @@ export default function AdminPage() {
         </div>
       </div>
 
+      {/* 토스트 알림 */}
+      {toast && (
+        <div className={`fixed top-4 left-1/2 -translate-x-1/2 z-[100] px-5 py-3 rounded-xl shadow-lg text-white text-sm font-semibold transition-all
+          ${toast.ok ? "bg-green-600" : "bg-red-500"}`}>
+          {toast.ok ? "✅ " : "❌ "}{toast.msg}
+        </div>
+      )}
+
       {/* 탭 */}
       <div className="bg-white border-b border-gray-200 flex">
         {(["workers", "jobs", "matches"] as Tab[]).map(t => (
@@ -555,6 +596,12 @@ export default function AdminPage() {
 
       <div className="px-4 py-5">
         {loading && <div className="text-center py-10 text-gray-500">불러오는 중...</div>}
+        {!loading && fetchError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-4 text-red-600 text-sm text-center">
+            ⚠️ {fetchError}
+            <button onClick={() => fetchData(tab)} className="ml-3 underline font-semibold">다시 시도</button>
+          </div>
+        )}
 
         {/* ── 구직자 목록 ── */}
         {!loading && tab === "workers" && (
